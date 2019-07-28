@@ -1,7 +1,7 @@
 # Mybatis学习笔记   
 ## 目录   
 
-[TOC] 
+[toc] 后续生成目录
 
 ### 1、mybatis入门  
   + mybatis的环境搭建   
