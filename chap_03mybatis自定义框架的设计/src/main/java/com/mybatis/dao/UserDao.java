@@ -1,6 +1,7 @@
 package com.mybatis.dao;
 
 import com.mybatis.domain.User;
+import com.mybatis.selfbatis.annotations.Select;
 
 import java.util.List;
 
@@ -16,5 +17,6 @@ public interface UserDao {
      * 查询所有操作
      * @return
      */
+    @Select("select * from user")  // 使用XML的话这句话删掉，且不需要annotations.Select注解
     List<User> findAll();
 }

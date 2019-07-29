@@ -1,6 +1,7 @@
 package com.mybatis.selfbatis.utils;
 
 // import com.mybatis.selfbatis.annotations.Select;
+import com.mybatis.selfbatis.annotations.Select;
 import com.mybatis.selfbatis.cfg.Configuration;
 import com.mybatis.selfbatis.cfg.Mapper;
 import com.mybatis.selfbatis.io.Resources;
@@ -89,14 +90,14 @@ public class XMLConfigBuilder {
                     //给configuration中的mappers赋值
                     cfg.setMappers(mappers);
                 }else{
-//                    System.out.println("使用的是注解");
-//                    //表示没有resource属性，用的是注解
-//                    //获取class属性的值
-//                    String daoClassPath = mapperElement.attributeValue("class");
-//                    //根据daoClassPath获取封装的必要信息
-//                    Map<String,Mapper> mappers = loadMapperAnnotation(daoClassPath);
-//                    //给configuration中的mappers赋值
-//                    cfg.setMappers(mappers);
+                    System.out.println("使用的是注解");
+                    //表示没有resource属性，用的是注解
+                    //获取class属性的值
+                    String daoClassPath = mapperElement.attributeValue("class");
+                    //根据daoClassPath获取封装的必要信息
+                    Map<String,Mapper> mappers = loadMapperAnnotation(daoClassPath);
+                    //给configuration中的mappers赋值
+                    cfg.setMappers(mappers);
                 }
             }
             //返回Configuration
@@ -172,7 +173,7 @@ public class XMLConfigBuilder {
      * 根据方法名称和类名，以及方法上注解value属性的值，组成Mapper的必要信息
      * @param daoClassPath
      * @return
-
+    */
     private static Map<String,Mapper> loadMapperAnnotation(String daoClassPath)throws Exception{
         //定义返回值对象
         Map<String,Mapper> mappers = new HashMap<String, Mapper>(16);
@@ -219,5 +220,4 @@ public class XMLConfigBuilder {
         }
         return mappers;
     }
-    */
 }
