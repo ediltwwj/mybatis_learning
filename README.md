@@ -38,6 +38,7 @@
     List<User> findAll();
     <mapper class="com.mybatis.dao.UserDao"/>
   ```
+  在实际开发中，都是越简便越好，所以都是采用不写dao实现类的方式。不管是XML还是注解配置，虽然Mybatis支持这种写法。
   
     
       
