@@ -24,9 +24,23 @@
     - 第六步: 释放资源  
     - **基于XML的注意事项**  
       a. 不要忘记在映射配置文件中告知mybatis要将结果封装到哪个实体类(resultType)  
-```
-<select id="findAll" resultType="com.mybatis.domain.User">
-```
+      b. 配置的方式: 指定实体类的全限定类名  
+    - **基于注解的注意事项**  
+      a. 把UserDao.xml移除，在dao接口的方法上使用@Select注解，并指定SQL语句  
+      b. 同时需要在SqlMapConfig.xml中的mapper配置时，使用class属性指定dao接口的全限定类名  
+  ```
+    <!-- xml -->
+    <select id="findAll" resultType="com.mybatis.domain.User">  
+    <mapper resource="com/mybatis/dao/UserDao.xml"/> 
+    
+    <!-- annotations -->
+    @Select("select * from user")
+    List<User> findAll();
+    <mapper class="com.mybatis.dao.UserDao"/>
+  ```
+  
+    
+      
         
       
       
