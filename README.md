@@ -40,6 +40,61 @@
   ```
   在实际开发中，都是越简便越好，所以都是采用不写dao实现类的方式。不管是XML还是注解配置，虽然Mybatis支持这种写法。
   
+### 2、自定义mybatis框架  
+  + 分析  
+    a. 根据配置文件的信息创建Connection对象，可以进行注册驱动，获取连接  
+    b. 获取预处理对象PreparedStatement，此时需要SQL语句，即conn.preStatement(sql);  
+    c. 执行查询，即ResultSet resultSet = preparedStatement.executeQuery();  
+    d. 遍历结果集用于封装  
+    ```
+        List<E> list = new ArrayList();
+        while(resultSet.next()){
+            E element = (E)Class.forName(配置的全限定类名).newInstance();
+            /*
+                封装思路:
+                    我们的实体类属性和表中的列名是一致的，于是我们就可以把表的列名看成实体类的属性名称。
+                    就可以使用反射的方式来获取每个属性，并把值赋进去。
+                    
+            */
+            
+            // 把element添加到list中
+            list.add(element);
+        }
+    ```  
+    e. 返回list 
+    - 要让上面的方法执行，我们需要给方法提供两个信息  
+      a. 连接信息  
+      b. 映射信息（包含两部分，组合起来定义成一个对象）  
+        + 执行的SQL语句  
+        + 封装结果的实体类全限定类名  
+    - 最后，根据dao接口字节码创建dao的代理对象，并调用上诉方法  
+    ```
+        // 4、使用SqlSession创建Dao接口的代理对象  
+        UserDao userDao = session.getMapper(UserDao.class);
+        
+        // 根据dao接口的字节码创建dao的代理对象  
+        public <T> T getMapper(Class<T> daoInterfaceClass){
+            /**
+                类加载器: 它使用的和被代理对象是相同的类加载器;
+                代理对象要实现的接口: 和被代理对象实现相同的接口;  
+                如何代理: 它就是增强的方法，我们需要自己来提供,
+                        此处是一个InvocationHandler的接口，我们需要写一个该接口的实现类，
+                        在实现类中调用selectList方法
+            */
+            Proxy.newProxyInstance(类加载器，代理对象要实现的接口字节码数组，如何代理);
+        }
+    ```
+    [思路解析,点击此处](https://www.cnblogs.com/622-yzl/p/11003636.html)  
+    
+    
+         
+         
+    
+    
+    
+    
+  
+  
     
       
         
