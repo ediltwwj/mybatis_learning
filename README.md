@@ -15,4 +15,20 @@
     b. 映射配置文件的mapper标签中namespace属性的取值必须是dao接口的全限定类名  
     c. 映射配置文件的操作配置（select），id属性的取值必须是dao接口的方法名  
     d. 遵循以上三点，后续开发就无须再写dao的实现类  
+  + mybatis的入门案例  
+    - 第一步: 读取配置文件（SqlMapConfig.xml）  
+    - 第二步: 创建SqlSessionFactory工厂  
+    - 第三步: 创建SqlSession  
+    - 第四步: 创建Dao接口的代理对象  
+    - 第五步: 执行dao中的方法  
+    - 第六步: 释放资源  
+    - **基于XML的注意事项**  
+      a. 不要忘记在映射配置文件中告知mybatis要将结果封装到哪个实体类(resultType)  
+```
+<select id="findAll" resultType="com.mybatis.domain.User">
+```
+        
+      
+      
+        
   
