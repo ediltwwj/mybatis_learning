@@ -7,7 +7,7 @@
 <configuration>
     <!-- 配置环境 -->
     <!-- default属性可以随便命名 -->
-    <environment default="mysql">
+    <environments default="mysql">
         <!-- 配置mysql的环境,id属性命名最好和default一致 -->
         <environment id="mysql">
             <!-- 配置事务的类型 -->
@@ -21,7 +21,7 @@
                 <property name="password" value="123456"/>
             </dataSource>
         </environment>
-    </environment>
+    </environments>
 
     <!-- 指定映射配置文件的位置,映射配置文件指的是每个dao独立的配置文件 -->
     <mappers>

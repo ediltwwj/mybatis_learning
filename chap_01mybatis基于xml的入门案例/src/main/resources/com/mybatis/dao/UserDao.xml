@@ -5,7 +5,7 @@
 <!-- namespace必须是dao接口的全限定类名 -->
 <mapper namespace="com.mybatis.dao.UserDao">
     <!-- 配置查询所有,id与方法名称对应 -->
-    <select id="findAll">
+    <select id="findAll" resultType="com.mybatis.domain.User">
         select * from user
     </select>
 </mapper>
