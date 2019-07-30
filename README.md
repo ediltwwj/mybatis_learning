@@ -86,19 +86,46 @@
     ```
     [思路解析,点击此处](https://www.cnblogs.com/622-yzl/p/11003636.html)  
     
+### 3、mybatis的crud单表操作  
+  + 基本步骤  
+    - 第一步: 编写dao接口(抽象方法)  
+    - 第二步: 编写dao接口的映射文件  
+    - 第三步: 调用dao接口的方法  
+    ```
+        // 查看chap_03的源代码
+        // 1、编写dao接口抽象方法(UserDao.java)  
+        public interface UserDao{
+            User findUserById(Integer userId);
+        }
+        // 2、编写方法对应的映射(UserDao.xml)
+        <select id="findUserById" parameterType="java.lang.Integer" resultType="com.mybatis.domain.User">
+            select * from user where id=#{userid};
+        </select>
+        // 3、调用crud方法
+        public void testFindUserById(){
     
-         
-         
+            User user = userDao.findUserById(42);
+            System.out.println(user);
+        }   
+    ```  
+  + 模糊查询    
+    - 第一种 : 采用PreparedStatement的参数占位符  
+    ``` 
+        <select id="findUserByName" parameterType="string" resultType="com.mybatis.domain.User">
+            select * from user where username like #{value}
+        </select>
+    ```
+    ```
+        List<User> users = userDao.findUsersByName("%王%");       
+    ```  
+    - 第二种 : 采用Statement对象的字符串拼接  
+    ```
+         <select id="findUserByName" parameterType="string" resultType="com.mybatis.domain.User">
+             select * from user where username like '%${value}%'
+         </select>
+    ```
+    ```
+         List<User> userList = userDao.findUserByName("%王%");
+    ```
+    推荐使用第二种方式  
     
-    
-    
-    
-  
-  
-    
-      
-        
-      
-      
-        
-  
