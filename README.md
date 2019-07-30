@@ -128,4 +128,64 @@
          List<User> userList = userDao.findUserByName("%王%");
     ```
     推荐使用第二种方式  
+  + 使用实体包装类作为参数   
+  ```
+      <select id="findUserByVo" parameterType="com.mybatis.domain.QueryVo" resultType="com.mybatis.domain.User">
+          <!-- {username}被认为是QueryVo中的属性，显然找不到 -->
+          <!-- select * from user where username like #{username}; -->
+          <!-- {user.username}的user是QueryVo中的属性 -->
+          select * from user where username like #{user.username};
+      </select>  
+  ```  
+  ```
+      public class QueryVo {
+      
+          private User user;
+      
+          public User getUser() {
+              return user;
+          }
+      
+          public void setUser(User user) {
+              this.user = user;
+          }
+      }
+  ```  
+  + 获取保存记录当中自增长的id  
+  ```
+      <!-- 保存用户,id自增长 -->
+      <insert id="saveUser" parameterType="com.mybatis.domain.User">
+          <!-- 配置插入操作后，获取插入数据对应实体类的id名称 -->
+          <!-- keyProperty对应实体类的Id，keyColumn对应数据库Id，order执行时机 -->
+          <selectKey keyProperty="id" keyColumn="id" resultType="int" order="AFTER">
+              select last_insert_id();
+          </selectKey>
+          insert into user(username, birthday, sex, address) values(#{username},#{birthday},#{sex},#{address});
+      </insert>
+  ```
+  + 关于实体类属性和数据库列名不一致的解决方案  
+    - 第一种 : 通过使用别名，在SQL语句层面解决问题  
+    ```
+        // 运行效率高，开发效率慢
+        select username as userName from user;
+    ```  
+    - 第二种 : 使用配置文件  
+    ```
+         <!-- 配置查询结果的列名和实体类的属性名的对应关系 -->
+         <!-- id是配置映射关系的标识，type是说明属于哪个实体类的映射 -->
+         <resultMap id="userMap" type="com.mybatis.domain.User">
+             <!-- 主键字段的对应，其中property为实体类中的属性名，column为数据库中的列名 -->
+             <id property="userId" column="id"/>
+             <!-- 非主键字段的对应 -->
+             <result property="userName" column="username"/>
+             <result property="userAddress" column="address"/>
+             <result property="userSex" column="sex"/>
+             <result property="userBirthday" column="birthday"/>
+         </resultMap>
+         
+         <!-- 注意：使用映射配置后，需要改一下select标签中的原属性resultType为resultMap，值是配置映射的id -->
+         <select id="findAll" resultMap="userMap">
+             select * from user
+         </select>
+    ```  
     
