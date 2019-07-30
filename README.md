@@ -171,6 +171,7 @@
     ```  
     - 第二种 : 使用配置文件  
     ```
+        // 由于多解析resultMap，导致运行效率慢，但开发效率高  
          <!-- 配置查询结果的列名和实体类的属性名的对应关系 -->
          <!-- id是配置映射关系的标识，type是说明属于哪个实体类的映射 -->
          <resultMap id="userMap" type="com.mybatis.domain.User">
