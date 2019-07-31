@@ -26,9 +26,4 @@
         select u.*, a.id as aid, a.uid, a.money from user u left outer join account a on u.id = a.uid
     </select>
 
-    <!-- 根据id查询用户 -->
-    <select id="findUserById" parameterType="java.lang.Integer" resultType="com.mybatis.domain.User">
-        select * from user where id=#{userid};
-    </select>
-
 </mapper>

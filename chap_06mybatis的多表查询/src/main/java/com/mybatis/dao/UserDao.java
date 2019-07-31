@@ -15,10 +15,4 @@ public interface UserDao {
      * @return
      */
     List<User> findAllUsers();
-
-    /**
-     * 根据id查询用户信息
-     * @param userId
-     */
-    User findUserById(Integer userId);
 }
