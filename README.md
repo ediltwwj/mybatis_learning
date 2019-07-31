@@ -268,7 +268,7 @@
     </mappers>
     ```  
 
-### mybatis的连接池以及事务原理  
+### 4、mybatis的连接池以及事务原理  
   + 连接池  
     - 连接池就是用于存储连接的一个容器  
     - 容器就是集合对象，必须是线程安全，不能两个线程拿到同一连接，且必须实现队列特性（FIFO）   
@@ -288,7 +288,7 @@
     - 自动提交事务，设置参数为true，sqlSession.openSession(true);  
     - 设置自动提交事务，适用于一次操作，不适合类似转账这种操作  
     
-### mybatis的动态Sql语句  
+### 5、mybatis的动态Sql语句  
   + 单表多条件查询  
     - if标签  
     ```
@@ -346,6 +346,83 @@
             <include refid="defaultUser"></include>
         </select>
     ```
+    
+### 6、mybatis的多表查询  
+```
+    // User类，即主表
+    public class User implements Serializable {
+    
+        private Integer id;
+        private String username;
+        private Date birthday;
+        private String sex;
+        private String address;
+    
+        // 一对多关系映射,主表实体应该包含从表实体的集合引用
+        private List<Account> accounts;
+    }
+```
+```
+    // Account类，即从表
+    public class Account implements Serializable {
+    
+        private Integer id;
+        private Integer uid;
+        private Double money;
+    
+        // 从表实体应该包含一个主表实体的对象引用
+        // 以此体现一对多和多对一关系
+        private User user;
+    }
+```
+  + 一对一,多对一  
+  ```
+      <!-- 定义封装account和user的resultMap, type表示要映射的实体 -->
+      <!-- column表示数据表主键字段或者查询语句的别名,property表示pojo对象的主键属性 -->
+      <resultMap id="accountUserMap" type="account">
+          <!-- 只能保证Account实体封装完成 -->
+          <id property="id" column="aid"></id>
+          <result property="uid" column="uid"></result>
+          <result property="money" column="money"></result>
+          <!-- 一对一关系映射，配置封装user的内容,javaTupe表示关联的实体 -->
+          <!-- property表示pojo的一个对象属性" javaType="上面pojo关联的pojo对象 -->
+          <association property="user" javaType="com.mybatis.domain.User">
+              <id property="id" column="id"></id>
+              <result property="username" column="username"></result>
+              <result property="address" column="address"></result>
+              <result property="sex" column="sex"></result>
+              <result property="birthday" column="birthday"></result>
+          </association>
+      </resultMap>
+      
+      <select id="findAllAccounts" resultMap="accountUserMap">
+          select u.*, a.id as aid, a.uid, a.money from account a, user u where u.id = a.uid
+      </select>   
+  ```
+  + 一对多  
+  ```
+      <!-- 定义User的resultMap-->
+      <resultMap id="userAccountMap" type="user">
+          <id property="id" column="id"></id>
+          <result property="username" column="username"></result>
+          <result property="address" column="address"></result>
+          <result property="sex" column="sex"></result>
+          <result property="birthday" column="birthday"></result>
+          <!-- 配置user对象中accounts集合的映射 -->
+          <!-- collection中的property表示实体类的集合属性,ofType表示集合中的对象 -->
+          <collection property="accounts" ofType="account">
+              <id property="id" column="aid"></id>
+              <result property="uid" column="uid"></result>
+              <result property="money" column="money"></result>
+          </collection>
+      </resultMap>
+      
+      <select id="findAllUsers" resultMap="userAccountMap">
+          select u.*, a.id as aid, a.uid, a.money from user u left outer join account a on u.id = a.uid
+      </select>    
+  ```
+  
+  
     
         
         
