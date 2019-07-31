@@ -62,47 +62,6 @@ public class MybatisTest {
     }
 
     /**
-     * 测试根据id查找用户
-     */
-    @Test
-    public void testFindUserById(){
-
-        User user = userDao.findUserById(42);
-        System.out.println(user);
-    }
-
-    /**
-     * 根据名称模糊查找用户
-     */
-    @Test
-    public void testFindUsersByName(){
-
-        // 在UserDao.xml中的SQL语句没有使用%,要在这里体现
-        List<User> users = userDao.findUsersByName("%王%");
-        for(User user : users){
-            System.out.println(user);
-        }
-    }
-
-    /**
-     * 使用包装类
-     * 测试使用QueryVo作为查询条件
-     */
-    @Test
-    public void testFindUserByQueryVo(){
-
-        QueryVo queryVo = new QueryVo();
-        User user = new User();
-        user.setUsername("%王%");
-        queryVo.setUser(user);
-
-        List<User> users = userDao.findUserByVo(queryVo);
-        for(User u : users){
-            System.out.println(u);
-        }
-    }
-
-    /**
      * 根据动态条件查询
      */
     @Test
