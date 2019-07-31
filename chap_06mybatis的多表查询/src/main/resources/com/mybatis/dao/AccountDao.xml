@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mybatis.dao.AccountDao">
+
+    <!-- 定义封装account和user的resultMap, type表示要映射的实体 -->
+    <!-- column表示数据表主键字段或者查询语句的别名,property表示pojo对象的主键属性 -->
+    <resultMap id="accountUserMap" type="account">
+        <!-- 只能保证Account实体封装完成 -->
+        <id property="id" column="aid"></id>
+        <result property="uid" column="uid"></result>
+        <result property="money" column="money"></result>
+        <!-- 一对一关系映射，配置封装user的内容,javaTupe表示关联的实体 -->
+        <!-- property表示pojo的一个对象属性" javaType="上面pojo关联的pojo对象 -->
+        <association property="user" javaType="com.mybatis.domain.User">
+            <id property="id" column="id"></id>
+            <result property="username" column="username"></result>
+            <result property="address" column="address"></result>
+            <result property="sex" column="sex"></result>
+            <result property="birthday" column="birthday"></result>
+        </association>
+    </resultMap>
+
+    <!-- 查询所有 -->
+    <select id="findAllAccounts" resultMap="accountUserMap">
+        select u.*, a.id as aid, a.uid, a.money from account a, user u where u.id = a.uid
+    </select>
+</mapper>
