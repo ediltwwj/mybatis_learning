@@ -421,7 +421,7 @@
           select u.*, a.id as aid, a.uid, a.money from user u left outer join account a on u.id = a.uid
       </select>    
   ```
-  + 多对多
+  + 多对多  
     两张表需要有个中间表,包含各自主键  
     两个实体类需要各自包含一个对方的集合引用  
     - 角色->用户的多对多,反之同理  
