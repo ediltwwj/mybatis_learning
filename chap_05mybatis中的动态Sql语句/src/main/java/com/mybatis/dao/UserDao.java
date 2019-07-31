@@ -43,4 +43,12 @@ public interface UserDao {
      * @return
      */
     List<User> findUserByCondition(User user);
+
+    /**
+     * 根据queryVo提供的id集合，查询用户信息
+     * select * from user where id in {41, 42, 43};
+     * @param vo
+     * @return
+     */
+    List<User> findUserInIds(QueryVo vo);
 }
