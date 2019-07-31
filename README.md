@@ -326,11 +326,24 @@
             select * from user
             <where>
                 <if test="ids != null and ids.size()>0">
+                    <!-- 从collection里遍历，每个对象为item,并用separator分隔，最后放在open和close之间 -->
                     <foreach collection="ids" open="and id in (" close=")" item="id" separator=",">
                         #{id} <!-- #{}和item属性对应-->
                     </foreach>
                 </if>
             </where>
+        </select>
+    ```  
+    - sql标签
+    ```
+        <!-- 了解的内容，用于抽取重复的Sql语句 -->
+        <sql id="defaultUser">
+            select * from user
+        </sql>
+    
+        <!-- 使用include去实现代替 -->
+        <select id="findAll" resultType="com.mybatis.domain.User">
+            <include refid="defaultUser"></include>
         </select>
     ```
     
