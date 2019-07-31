@@ -286,9 +286,38 @@
   + 事务原理  
     - 通过SqlSession的commit()和rollback()方法进行事务提交和回滚  
     - 自动提交事务，设置参数为true，sqlSession.openSession(true);  
-    - 设置自动提交事务，适用于一次操作，不适合类似转账这种操作 
+    - 设置自动提交事务，适用于一次操作，不适合类似转账这种操作  
     
-    
+### mybatis的动态Sql语句  
+  + 单表多条件查询  
+    - if标签  
+    ```
+        <!-- 根据条件查询用户 条件很多的时候很繁琐 1=1表示后面所有条件都要为真 -->
+        <select id="findUserByCondition" parameterType="com.mybatis.domain.User" resultType="com.mybatis.domain.User">
+            select * from user where 1=1
+            <if test="username != null">
+                and username = #{username}
+            </if>
+            <if test="sex != null">
+                and sex = #{sex}
+            </if>
+        </select>    
+    ```  
+    - where标签嵌套if标签  
+    ```
+        <!-- 嵌套使用，if标签中的条件允许为假 -->
+        <select id="findUserByCondition" parameterType="com.mybatis.domain.User" resultType="com.mybatis.domain.User">
+            select * from user
+            <where>
+                <if test="username != null">
+                    and username = #{username}
+                </if>
+                <if test="sex != null">
+                    and sex = #{sex}
+                </if>
+            </where>
+        </select>
+    ```  
     
         
         
