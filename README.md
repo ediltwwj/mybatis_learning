@@ -318,6 +318,21 @@
             </where>
         </select>
     ```  
+    - foreach标签  
+    ```
+        // 对应sql语句select * from user where id in {41, 42, 46};
+        <!-- 根据queryVo中的id集合实现查询用户列表 -->
+        <select id="findUserInIds" parameterType="com.mybatis.domain.QueryVo" resultType="com.mybatis.domain.User">
+            select * from user
+            <where>
+                <if test="ids != null and ids.size()>0">
+                    <foreach collection="ids" open="and id in (" close=")" item="id" separator=",">
+                        #{id} <!-- #{}和item属性对应-->
+                    </foreach>
+                </if>
+            </where>
+        </select>
+    ```
     
         
         
