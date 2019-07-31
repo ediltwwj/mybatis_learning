@@ -421,6 +421,57 @@
           select u.*, a.id as aid, a.uid, a.money from user u left outer join account a on u.id = a.uid
       </select>    
   ```
+  + 多对多
+    两张表需要有个中间表,包含各自主键  
+    两个实体类需要各自包含一个对方的集合引用  
+    - 角色->用户的多对多,反之同理  
+  ```
+      // User类
+      public class User implements Serializable {
+      
+          private Integer id;
+          private String username;
+          private Date birthday;
+          private String sex;
+          private String address;
+      
+          private List<Account> accounts;
+      }  
+  ```
+  ```
+      // Role类
+      public class Role implements Serializable {
+        
+        private Integer roleId;
+        private String roleName;
+        private String roleDesc;
+        
+        private List<User> users;
+      }
+  ```
+  ```
+      <!-- 定义role表的resultMap -->
+      <resultMap id="roleMap" type="role">
+          <id property="roleId" column="rid"></id>
+          <result property="roleName" column="role_name"></result>
+          <result property="roleDesc" column="role_desc"></result>
+          <collection property="users" ofType="user">
+              <id property="id" column=""></id>
+              <result property="username" column="username"></result>
+              <result property="sex" column="sex"></result>
+              <result property="address" column="address"></result>
+              <result property="birthday" column="birthday"></result>
+          </collection>
+      </resultMap>
+  
+      <!-- 查询所有角色 -->
+      <select id="findAllRole" resultMap="roleMap">
+          <!-- mysql不支持全外连接 -->
+          select u.*, r.id as rid, r.role_name, r.role_desc from role r 
+           left outer join user_role ur on r.id = ur.rid 
+            left outer join user u on u.id = ur.uid
+      </select>
+  ```
   
   
     
