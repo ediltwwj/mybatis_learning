@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mybatis.dao.UserDao">
+    <!-- 查询所有 -->
+    <select id="findAll" resultType="com.mybatis.domain.User">
+        select * from user;
+    </select>
+
+    <!-- 根据id查询用户 -->
+    <select id="findUserById" parameterType="java.lang.Integer" resultType="com.mybatis.domain.User">
+        select * from user where id=#{userid};
+    </select>
+
+    <!-- 根据名称模糊查询 -->
+    <select id="findUsersByName" parameterType="String" resultType="com.mybatis.domain.User">
+        select * from user where username like #{username};
+    </select>
+
+    <!-- 根据queryVo的条件查询用户 -->
+    <select id="findUserByVo" parameterType="com.mybatis.domain.QueryVo" resultType="com.mybatis.domain.User">
+        select * from user where username like #{user.username};
+    </select>
+
+    <!-- 根据条件查询用户 条件很多的时候很繁琐 1=1表示后面所有条件都要为真
+    <select id="findUserByCondition" parameterType="com.mybatis.domain.User" resultType="com.mybatis.domain.User">
+        select * from user where 1=1
+        <if test="username != null">
+            and username = #{username}
+        </if>
+        <if test="sex != null">
+            and sex = #{sex}
+        </if>
+    </select>
+    -->
+
+    <!-- 根据条件查询用户 -->
+    <select id="findUserByCondition" parameterType="com.mybatis.domain.User" resultType="com.mybatis.domain.User">
+        select * from user
+        <where>
+            <if test="username != null">
+                and username = #{username}
+            </if>
+            <if test="sex != null">
+                and sex = #{sex}
+            </if>
+        </where>
+    </select>
+</mapper>
