@@ -464,7 +464,7 @@
           </collection>
       </resultMap>
   
-      <!-- 查询所有角色 -->
+      <!-- 查询所有角色对应的每个用户 -->
       <select id="findAllRole" resultMap="roleMap">
           <!-- mysql不支持全外连接 -->
           select u.*, r.id as rid, r.role_name, r.role_desc from role r 
