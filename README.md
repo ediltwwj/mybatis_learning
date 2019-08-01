@@ -584,7 +584,45 @@
           </select>
       ```
     **注: 一级缓存存对象，二级缓存存数据**  
-      
+    
+### 9、mybatis基于注解开发  
+  + 单表的CRUD参考chap_02源码  
+  + 使用注解解决实体类属性与表的字段不一致问题  
+    id为该映射的唯一标识，可以供其他地方引用  
+  ```
+      @Select("select * from user")
+      @Results(id = "userMap", value={
+              // id设为true表示主键,默认为false
+              @Result(id=true, column = "id", property = "userId"),
+              @Result(column = "username", property = "userName"),
+              @Result(column = "sex", property = "userSex"),
+              @Result(column = "address", property = "userAddress"),
+              @Result(column = "birthday", property = "userBirthday")
+      })
+      List<User> findAllUsers();
+  ```  
+    在其他处引用上面的映射  
+  ```
+      @Select("select * from user where id=#{id}")
+      @ResultMap(value = {"userMap"})
+      User findUserById(Integer id);
+  ```  
+  + 多表查询  
+    - 一对一  
+    ```
+        @Select("select * from account")
+        @Results(id = "accountMap", value = {
+                @Result(id = true, column = "id", property ="id" ),
+                @Result(column = "uid", property = "uid"),
+                @Result(column = "money", property = "money"),
+                // property表示关联的pojo对象，column表示查询条件，@One表示一对一，select表示获得关联对象的方法，fetchType表示加载方式
+                @Result(property = "user", column = "uid", one=@One(select="com.mybatis.dao.UserDao.findUserById", fetchType= FetchType.EAGER))
+        })
+        List<Account> findAllAccountUser();
+    ```
+    
+    
+  
       
     
   
