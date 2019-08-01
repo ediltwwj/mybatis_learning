@@ -583,6 +583,8 @@
               select * from user where id = #{id}
           </select>
       ```
+    **注: 一级缓存存对象，二级缓存存数据**  
+      
       
     
   
