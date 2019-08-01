@@ -16,10 +16,10 @@ import java.util.List;
 
 /**
  * @author 13967
- * @date 2019/8/1 17:23
- * 数据库表字段和实体类属性名不一致,单表
+ * @date 2019/8/1 18:32
+ * 多表查询测试 一对多
  */
-public class AnnoCrudTestTwo {
+public class UserTest {
 
     private InputStream in;
     private SqlSessionFactory factory;
@@ -48,14 +48,9 @@ public class AnnoCrudTestTwo {
 
         List<User> users = userDao.findAllUsers();
         for(User user : users){
+            System.out.println("--------每个用户和其账号信息-------");
             System.out.println(user);
+            System.out.println(user.getAccounts());
         }
-    }
-
-    @Test
-    public void testFindUserById(){
-
-        User user = userDao.findUserById(1);
-        System.out.println(user);
     }
 }

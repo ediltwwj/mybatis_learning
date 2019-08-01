@@ -2,6 +2,7 @@ package com.mybatis.dao;
 
 import com.mybatis.domain.User;
 import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.mapping.FetchType;
 
 import java.util.List;
 
@@ -12,7 +13,7 @@ import java.util.List;
 public interface UserDao {
 
     /**
-     * 查询所有用户
+     * 查询所有用户,并获得该用户的所有账户信息
      * @return
      */
     @Select("select * from user")
@@ -22,7 +23,9 @@ public interface UserDao {
             @Result(column = "username", property = "userName"),
             @Result(column = "sex", property = "userSex"),
             @Result(column = "address", property = "userAddress"),
-            @Result(column = "birthday", property = "userBirthday")
+            @Result(column = "birthday", property = "userBirthday"),
+            @Result(property = "accounts", column = "id",
+                    many=@Many(select = "com.mybatis.dao.AccountDao.findAccountByUid", fetchType = FetchType.LAZY))
     })
     List<User> findAllUsers();
 

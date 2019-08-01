@@ -14,6 +14,9 @@ package com.mybatis.test;
  * @author 13967
  * @date 2019/8/1 16:03
  */
+public class AnnoTest{
+
+}
 // 此段代码和chap_02代码一样，只能用在是实体类属性和表的字段一致的情况
 //public class AnnoTest {
 //

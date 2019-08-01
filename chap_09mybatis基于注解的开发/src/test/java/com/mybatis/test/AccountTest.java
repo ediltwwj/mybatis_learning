@@ -1,7 +1,7 @@
 package com.mybatis.test;
 
-import com.mybatis.dao.UserDao;
-import com.mybatis.domain.User;
+import com.mybatis.dao.AccountDao;
+import com.mybatis.domain.Account;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -16,15 +16,15 @@ import java.util.List;
 
 /**
  * @author 13967
- * @date 2019/8/1 17:23
- * 数据库表字段和实体类属性名不一致,单表
+ * @date 2019/8/1 17:51
+ * 多表查询测试 一对一
  */
-public class AnnoCrudTestTwo {
+public class AccountTest {
 
     private InputStream in;
     private SqlSessionFactory factory;
     private SqlSession session;
-    private UserDao userDao;
+    private AccountDao accountDao;
 
     @Before
     public void init() throws IOException {
@@ -32,7 +32,7 @@ public class AnnoCrudTestTwo {
         in = Resources.getResourceAsStream("SqlMapConfig.xml");
         factory = new SqlSessionFactoryBuilder().build(in);
         session = factory.openSession();
-        userDao = session.getMapper(UserDao.class);
+        accountDao = session.getMapper(AccountDao.class);
     }
 
     @After
@@ -44,18 +44,13 @@ public class AnnoCrudTestTwo {
     }
 
     @Test
-    public void testFindAllUsers(){
+    public void testFindAccountUser(){
 
-        List<User> users = userDao.findAllUsers();
-        for(User user : users){
-            System.out.println(user);
+        List<Account> accounts = accountDao.findAllAccountUser();
+        for(Account account : accounts){
+            System.out.println("---- 每个账户的信息 ----");
+            System.out.println(account);
+            System.out.println(account.getUser());
         }
-    }
-
-    @Test
-    public void testFindUserById(){
-
-        User user = userDao.findUserById(1);
-        System.out.println(user);
     }
 }

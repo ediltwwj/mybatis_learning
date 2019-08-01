@@ -2,6 +2,7 @@ package com.mybatis.domain;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author 13967
@@ -14,6 +15,8 @@ public class User implements Serializable {
     private String userAddress;
     private String userSex;
     private Date userBirthday;
+
+    private List<Account> accounts;
 
     public Integer getUserId() {
         return userId;
@@ -53,6 +56,14 @@ public class User implements Serializable {
 
     public void setUserBirthday(Date userBirthday) {
         this.userBirthday = userBirthday;
+    }
+
+    public List<Account> getAccounts() {
+        return accounts;
+    }
+
+    public void setAccounts(List<Account> accounts) {
+        this.accounts = accounts;
     }
 
     @Override
