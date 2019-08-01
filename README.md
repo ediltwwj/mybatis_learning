@@ -558,6 +558,32 @@
     - 第一次执行查询写入内存，后面查询直接从内存拿数据  
     - 可以使用SqlSession的close或者clearCache方法清空缓存  
     - 更新，删除等操作也会触发清空缓存  
+  + 二级缓存  
+    - Mapper级别的缓存  
+    - 每个Mapper都有自己独立的二级缓存区域  
+    - 但是如果两个Mapper的namespace相同，则查询结果被放在同一个缓存区域  
+    - 同一个SqlSessionFactory产生的不同SqlSession共享一个二级缓存  
+    - 二级缓存使用步骤  
+      第一步 : 让mybatis支持二级缓存（配置SqlMapConfig.xml）
+      ```
+          <!-- 不配置也行，默认支持 -->
+          <settings>
+              <setting name="cacheEnabled" value="true"/>
+          </settings>
+      ```   
+      第二步 : 让当前的映射文件支持二级缓存（配置UserDao.xml） 
+      ```
+          <!-- 开启User支持二级缓存 -->
+          <cache/>
+      ``` 
+      第三步 : 让当前操作支持二级缓存（配置select标签）  
+      ```
+          <!-- useCache设置为true -->
+          <select id="findUserById" resultType="user" parameterType="java.lang.Integer" useCache="true">
+              select * from user where id = #{id}
+          </select>
+      ```
+      
     
   
     
