@@ -473,6 +473,80 @@
       </select>
   ```
   
+### mybatis的加载  
+  + 立即加载  
+    - 多表查询的时候，如果在SQL语句中直接使用多表连接就是立即加载  
+    - 适用于一对一和多对一(一对一是通常情况下立即加载)  
+  + 延迟加载  
+    - 适用于一对多和多对多  
+    - 使用时，需在SqlMapConfig中配置来开启延迟加载  
+    ```
+    <!-- 配置参数 -->
+    <settings>
+        <!-- 开启mybatis支持延迟加载 -->
+        <!-- mybatis version > 3.4.1 时,aggressiveLazyLoading可以不设置 -->
+        <setting name="lazyLoadingEnabled" value="true"/>
+        <setting name="aggressiveLazyLoading" value="false"></setting>
+    </settings>  
+    ```
+    - 一对一实现延迟加载  
+    AccountDao.xml  
+    ```
+    <mapper namespace="com.mybatis.dao.AccountDao">
+    
+        <!-- 定义封装account和user的resultMap, type表示要映射的实体 -->
+        <resultMap id="accountUserMap" type="account">
+            <id property="id" column="id"></id>
+            <result property="uid" column="uid"></result>
+            <result property="money" column="money"></result>
+            <!-- select属性属性指定的内容，就是查询用户的唯一标识
+                 column在此处必须写，是用户根据id查询时，所需要参数的值，来自account-->
+            <association property="user" column="uid" javaType="user" select="com.mybatis.dao.UserDao.findUserById"></association>
+        </resultMap>
+    
+        <!-- 查询所有 -->
+        <select id="findAllAccounts" resultMap="accountUserMap">
+            select * from account
+        </select>
+    
+        <!-- 根据用户ID查询账户信息 -->
+        <select id="findAccountByUid" resultType="account">
+            select * from account where uid = #{uid}
+        </select>
+    </mapper>
+    ```
+    - 一对多实现延迟加载  
+    UserDao.xml  
+    ```
+    <mapper namespace="com.mybatis.dao.UserDao">
+    
+        <!-- 定义User的resultMap-->
+        <resultMap id="userAccountMap" type="user">
+            <id property="id" column="id"></id>
+            <result property="username" column="username"></result>
+            <result property="address" column="address"></result>
+            <result property="sex" column="sex"></result>
+            <result property="birthday" column="birthday"></result>
+            <!-- 配置user对象中accounts集合的映射 -->
+            <collection property="accounts" ofType="account" select="com.mybatis.dao.AccountDao.findAccountByUid" column="id">
+            </collection>
+        </resultMap>
+    
+        <!-- 查询所有用户以及对应的账户 -->
+        <select id="findAllUsers" resultMap="userAccountMap">
+            select * from user
+        </select>
+    
+        <!-- 根据id查询用户 -->
+        <select id="findUserById" parameterType="java.lang.Integer" resultType="com.mybatis.domain.User">
+            select * from user where id=#{userid};
+        </select>
+    
+    </mapper>
+    ```  
+    
+    
+  
   
     
         
