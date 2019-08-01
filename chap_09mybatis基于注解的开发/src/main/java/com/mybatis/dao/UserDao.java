@@ -10,6 +10,7 @@ import java.util.List;
  * @author 13967
  * @date 2019/8/1 15:50
  */
+@CacheNamespace(blocking = true)
 public interface UserDao {
 
     /**
