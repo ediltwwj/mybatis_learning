@@ -601,7 +601,7 @@
         })
         List<User> findAllUsers();
     ```    
-    - 在其他处引用上面的映射  
+    - 在其他处引用上面的映射@ResultMap  
     ```
         @Select("select * from user where id=#{id}")
         @ResultMap(value = {"userMap"})
@@ -635,7 +635,23 @@
                         many=@Many(select = "com.mybatis.dao.AccountDao.findAccountByUid", fetchType = FetchType.LAZY))
         })
         List<User> findAllUsers();
+    ``` 
+  + 二级缓存(一级默认开启)  
+    - 配置SqlMapConfig.xml  
+    ```
+       <!-- 不配置也行，默认支持 -->
+        <settings>
+            <setting name="cacheEnabled" value="true"/>
+        </settings>
     ```  
+    - 在dao接口上加上注解@CacheNamespace  
+    ```
+    @CacheNamespace(blocking = true)
+    public interface UserDao {
+    }
+    ```
+    
+   
     
     
     
