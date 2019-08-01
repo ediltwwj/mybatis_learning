@@ -6,6 +6,10 @@
 <configuration>
     <properties resource="jdbcConfig.properties"></properties>
 
+    <settings>
+        <setting name="cacheEnabled" value="true"/>
+    </settings>
+
     <typeAliases>
         <package name="com.mybatis.domain"></package>
     </typeAliases>
