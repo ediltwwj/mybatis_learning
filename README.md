@@ -28,7 +28,7 @@
     - **基于注解的注意事项**  
       a. 把UserDao.xml移除，在dao接口的方法上使用@Select注解，并指定SQL语句  
       b. 同时需要在SqlMapConfig.xml中的mapper配置时，使用class属性指定dao接口的全限定类名  
-  ```
+  ```  java
     <!-- xml -->
     <select id="findAll" resultType="com.mybatis.domain.User">  
     <mapper resource="com/mybatis/dao/UserDao.xml"/> 
@@ -46,7 +46,7 @@
     b. 获取预处理对象PreparedStatement，此时需要SQL语句，即conn.preStatement(sql);  
     c. 执行查询，即ResultSet resultSet = preparedStatement.executeQuery();  
     d. 遍历结果集用于封装  
-    ```
+    ```  java
         List<E> list = new ArrayList();
         while(resultSet.next()){
             E element = (E)Class.forName(配置的全限定类名).newInstance();
@@ -68,7 +68,7 @@
         + 执行的SQL语句  
         + 封装结果的实体类全限定类名  
     - 最后，根据dao接口字节码创建dao的代理对象，并调用上诉方法  
-    ```
+    ```  java
         // 4、使用SqlSession创建Dao接口的代理对象  
         UserDao userDao = session.getMapper(UserDao.class);
         
@@ -91,7 +91,7 @@
     - 第一步: 编写dao接口(抽象方法)  
     - 第二步: 编写dao接口的映射文件  
     - 第三步: 调用dao接口的方法  
-    ```
+    ```  java
         // 查看chap_03的源代码
         // 1、编写dao接口抽象方法(UserDao.java)  
         public interface UserDao{
@@ -110,26 +110,26 @@
     ```  
   + 模糊查询    
     - 第一种 : 采用PreparedStatement的参数占位符  
-    ``` 
+    ```   java
         <select id="findUserByName" parameterType="string" resultType="com.mybatis.domain.User">
             select * from user where username like #{value}
         </select>
     ```
-    ```
+    ```  java
         List<User> users = userDao.findUsersByName("%王%");       
     ```  
     - 第二种 : 采用Statement对象的字符串拼接  
-    ```
+    ```  java
          <select id="findUserByName" parameterType="string" resultType="com.mybatis.domain.User">
              select * from user where username like '%${value}%'
          </select>
     ```
-    ```
+    ```  java
          List<User> userList = userDao.findUserByName("%王%");
     ```
     推荐使用第二种方式  
   + 使用实体包装类作为参数   
-  ```
+  ```  xml
       <select id="findUserByVo" parameterType="com.mybatis.domain.QueryVo" resultType="com.mybatis.domain.User">
           <!-- {username}被认为是QueryVo中的属性，显然找不到 -->
           <!-- select * from user where username like #{username}; -->
@@ -137,7 +137,7 @@
           select * from user where username like #{user.username};
       </select>  
   ```  
-  ```
+  ``` java
       public class QueryVo {
       
           private User user;
@@ -152,7 +152,7 @@
       }
   ```  
   + 获取保存记录当中自增长的id  
-  ```
+  ```  xml
       <!-- 保存用户,id自增长 -->
       <insert id="saveUser" parameterType="com.mybatis.domain.User">
           <!-- 配置插入操作后，获取插入数据对应实体类的id名称 -->
@@ -165,12 +165,12 @@
   ```
   + 关于实体类属性和数据库列名不一致的解决方案  
     - 第一种 : 通过使用别名，在SQL语句层面解决问题  
-    ```
+    ```  mysql
         // 运行效率高，开发效率慢
         select username as userName from user;
     ```  
     - 第二种 : 使用配置文件  
-    ```
+    ```  java
         // 由于多解析resultMap，导致运行效率慢，但开发效率高  
          <!-- 配置查询结果的列名和实体类的属性名的对应关系 -->
          <!-- id是配置映射关系的标识，type是说明属于哪个实体类的映射 -->
@@ -193,7 +193,7 @@
     - properties  
       + 可以将配置信息单独写在一个文件中(jdbcConfig.properties)  
       + 引用该配置文件(resource引用或者url引用)  
-      ```
+      ```  xml
       <configuration>
           <!-- 配置properties
                可以在标签内部配置连接数据库的信息，也可以通过属性引用外部配置文件信息(jdbcConfig.properties)
@@ -230,14 +230,14 @@
       </configuration>  
       ```  
       外部文件（jdbcConfig.properties）  
-      ```
+      ``` properties
       jdbc.driver = com.mysql.jdbc.Driver
       jdbc.url = jdbc:mysql://localhost:3306/mybatis_01
       jdbc.username = root
       jdbc.password = 123456
       ```
     - typeAliases  
-    ```
+    ``` xml
       <!-- typeAlias用于配置别名,它只能配置domain中类的别名 -->
       <typeAliases>
           <!-- typeAlias用于配置别名,type属性指定的是实体类全限定类名,alias属性当指定别名就不再区分大小写 -->
@@ -247,20 +247,20 @@
           <package name="com.mybatis.domain"></package>
       </typeAliases>    
     ```
-    ```
+    ```  xml
       // 未配置别名前  
       <update id="updateUser" parameterType="com.mybatis.domain.User">
             update user set username=#{username}, address=#{address}, sex=#{sex}, birthday=#{birthday} where id=#{id};
         </update>
     ```
-    ```
+    ```  xml
       // 配置别名后
       <update id="updateUser" parameterType="user">
             update user set username=#{username}, address=#{address}, sex=#{sex}, birthday=#{birthday} where id=#{id};
         </update>
     ```  
     - mappers标签中的package  
-    ```
+    ``` xml
     <mappers>
         <!-- <mapper resource="com/mybatis/dao/UserDao.xml"></mapper> -->
         <!-- package标签是用于指定dao接口所在的包，当指定之后就不需要再写mapper以及resource或者class了 -->
@@ -291,7 +291,7 @@
 ### 5、mybatis的动态Sql语句  
   + 单表多条件查询  
     - if标签  
-    ```
+    ```  xml
         <!-- 根据条件查询用户 条件很多的时候很繁琐 1=1表示后面所有条件都要为真 -->
         <select id="findUserByCondition" parameterType="com.mybatis.domain.User" resultType="com.mybatis.domain.User">
             select * from user where 1=1
@@ -304,7 +304,7 @@
         </select>    
     ```  
     - where标签嵌套if标签  
-    ```
+    ```  xml
         <!-- 嵌套使用，if标签中的条件允许为假 -->
         <select id="findUserByCondition" parameterType="com.mybatis.domain.User" resultType="com.mybatis.domain.User">
             select * from user
@@ -319,7 +319,7 @@
         </select>
     ```  
     - foreach标签  
-    ```
+    ```  xml
         // 对应sql语句select * from user where id in {41, 42, 46};
         <!-- 根据queryVo中的id集合实现查询用户列表 -->
         <select id="findUserInIds" parameterType="com.mybatis.domain.QueryVo" resultType="com.mybatis.domain.User">
@@ -335,7 +335,7 @@
         </select>
     ```  
     - sql标签
-    ```
+    ```  xml
         <!-- 了解的内容，用于抽取重复的Sql语句 -->
         <sql id="defaultUser">
             select * from user
@@ -348,7 +348,7 @@
     ```
     
 ### 6、mybatis的多表查询  
-```
+```  java
     // User类，即主表
     public class User implements Serializable {
     
@@ -362,7 +362,7 @@
         private List<Account> accounts;
     }
 ```
-```
+```  java
     // Account类，即从表
     public class Account implements Serializable {
     
@@ -376,7 +376,7 @@
     }
 ```
   + 一对一,多对一  
-  ```
+  ```  xml
       <!-- 定义封装account和user的resultMap, type表示要映射的实体 -->
       <!-- column表示数据表主键字段或者查询语句的别名,property表示pojo对象的主键属性 -->
       <resultMap id="accountUserMap" type="account">
@@ -400,7 +400,7 @@
       </select>   
   ```
   + 一对多  
-  ```
+  ```  xml
       <!-- 定义User的resultMap-->
       <resultMap id="userAccountMap" type="user">
           <id property="id" column="id"></id>
@@ -425,7 +425,7 @@
     两张表需要有个中间表,包含各自主键  
     两个实体类需要各自包含一个对方的集合引用  
     - 角色->用户的多对多,反之同理  
-  ```
+  ```  java
       // User类
       public class User implements Serializable {
       
@@ -438,7 +438,7 @@
           private List<Account> accounts;
       }  
   ```
-  ```
+  ```  java
       // Role类
       public class Role implements Serializable {
         
@@ -449,7 +449,7 @@
         private List<User> users;
       }
   ```
-  ```
+  ```  xml
       <!-- 定义role表的resultMap -->
       <resultMap id="roleMap" type="role">
           <id property="roleId" column="rid"></id>
@@ -481,7 +481,7 @@
     - 适用于一对多和多对多  
     - 先从单表查询、需要时再从关联表去关联查询，大大提高 数据库性能，因为查询单表要比关联查询多张表速度要快
     - 使用时，需在SqlMapConfig.xml中配置来开启延迟加载  
-    ```
+    ```  xml
     <!-- 配置参数 -->
     <settings>
         <!-- 开启mybatis支持延迟加载 -->
@@ -492,7 +492,7 @@
     ```
     - 一对一实现延迟加载  
     AccountDao.xml  
-    ```
+    ```  xml
     <mapper namespace="com.mybatis.dao.AccountDao">
     
         <!-- 定义封装account和user的resultMap, type表示要映射的实体 -->
@@ -518,7 +518,7 @@
     ```
     - 一对多实现延迟加载  
     UserDao.xml  
-    ```
+    ```  xml
     <mapper namespace="com.mybatis.dao.UserDao">
     
         <!-- 定义User的resultMap-->
@@ -565,19 +565,19 @@
     - 同一个SqlSessionFactory产生的不同SqlSession共享一个二级缓存  
     - 二级缓存使用步骤  
       第一步 : 让mybatis支持二级缓存（配置SqlMapConfig.xml）
-      ```
+      ```  xml
           <!-- 不配置也行，默认支持 -->
           <settings>
               <setting name="cacheEnabled" value="true"/>
           </settings>
       ```   
       第二步 : 让当前的映射文件支持二级缓存（配置UserDao.xml） 
-      ```
+      ```  xml
           <!-- 开启User支持二级缓存 -->
           <cache/>
       ``` 
       第三步 : 让当前操作支持二级缓存（配置select标签）  
-      ```
+      ```  xml
           <!-- useCache设置为true -->
           <select id="findUserById" resultType="user" parameterType="java.lang.Integer" useCache="true">
               select * from user where id = #{id}
@@ -589,7 +589,7 @@
   + 单表的CRUD参考chap_02源码  
   + 使用注解解决实体类属性与表的字段不一致问题  
     - id为该映射的唯一标识，可以供其他地方引用  
-    ```
+    ```  java
         @Select("select * from user")
         @Results(id = "userMap", value={
                 // id设为true表示主键,默认为false
@@ -602,14 +602,14 @@
         List<User> findAllUsers();
     ```    
     - 在其他处引用上面的映射@ResultMap  
-    ```
+    ```  java
         @Select("select * from user where id=#{id}")
         @ResultMap(value = {"userMap"})
         User findUserById(Integer id);
     ```  
   + 多表查询  
     - 一对一@One  
-    ```
+    ```  java
         @Select("select * from account")
         @Results(id = "accountMap", value = {
                 @Result(id = true, column = "id", property ="id" ),
@@ -622,7 +622,7 @@
         List<Account> findAllAccountUser();
     ```  
     - 一对多@Many  
-    ```
+    ```  java
         @Select("select * from user")
         @Results(id = "userMap", value={
                 // id设为true表示主键,默认为false
@@ -638,14 +638,14 @@
     ``` 
   + 二级缓存(一级默认开启)  
     - 配置SqlMapConfig.xml  
-    ```
+    ```  xml
        <!-- 不配置也行，默认支持 -->
         <settings>
             <setting name="cacheEnabled" value="true"/>
         </settings>
     ```  
     - 在dao接口上加上注解@CacheNamespace  
-    ```
+    ```  java
     @CacheNamespace(blocking = true)
     public interface UserDao {
     }
